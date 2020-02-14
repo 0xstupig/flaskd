@@ -1,0 +1,17 @@
+venv
+venv/*
+.env
+.vscode
+.vscode/*
+.idea
+.idea/*
+*.pyc
+tags
+.DS_Store
+logs
+logs/*
+logs/*.log
+Scripts/**
+Include/**
+Lib/**
+tcl/**

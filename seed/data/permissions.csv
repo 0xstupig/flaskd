@@ -1,0 +1,17 @@
+name,display_name,description,parent_name
+AccountManagement,Account management,Manage account permission,
+AccountManagement.Create,Create account,,AccountManagement
+AccountManagement.Delete,Delete account,,AccountManagement
+AccountManagement.GetAll,Get all accounts,,AccountManagement
+ConsumerManagement,Consumer management,Manage consumer permission,
+ConsumerManagement.GetAll,Get all consumers,,ConsumerManagement
+RoleManagement,Role management, Manage role permission,
+RoleManagement.GetAll,Get all role,,RoleManagement
+RoleManagement.Create,Create role,,RoleManagement
+RoleManagement.Update,Update role,,RoleManagement
+RoleManagement.Delete,Delete role,,RoleManagement
+PermissionManagement,Permission management,Manage permission,
+PermissionManagement.GetAll,Get all permission,,PermissionManagement
+PermissionManagement.Create,Create permission,,PermissionManagement
+PermissionManagement.Update,Update permission,,PermissionManagement
+PermissionManagement.Delete,Delete permission,,PermissionManagement

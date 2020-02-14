@@ -1,0 +1,544 @@
+info:
+  title: Flaskd Example
+  description: Flaskd example api
+  version: '2.0'
+
+security:
+  - bearerAuth: []
+
+tags:
+  - name: Auth
+    description: All things related to authentication
+  - name: User
+    description: All things related to user
+paths:
+  /auth/_register:
+    post:
+      tags:
+        - Auth
+      summary: 'Register a new user'
+      description: |
+        Register a new user
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/User'
+                - type: object
+                  properties:
+                    password:
+                      type: string
+                      example: Password.123
+                    facebook_id:
+                      type: string
+                      example: '98654321'
+                    google_id:
+                      type: string
+                      example: '98654321'
+                  required:
+                    - password
+      responses:
+        200:
+          description: Register a new user successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          access_token:
+                            type: string
+                          refresh_token:
+                            type: string
+        400:
+          $ref: '#/components/responses/InvalidRequest'
+  /auth/_login:
+    post:
+      tags:
+        - Auth
+      summary: Login user
+      description: |
+        Login user
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: johndoe@gmail.com
+                password:
+                  type: string
+                  example: Password.123
+              required:
+                - email
+                - password
+      responses:
+        200:
+          $ref: '#/components/responses/LoginSuccess'
+        400:
+          $ref: '#/components/responses/InvalidRequest'
+  /auth/_logout:
+    post:
+      tags:
+        - Auth
+      summary: Logout user
+      description: |
+        Log out user
+      responses:
+        200:
+          description: Logout user successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+        403:
+          $ref: '#/components/responses/Forbidden'
+  /auth/_access_token:
+    post:
+      tags:
+        - Auth
+      summary: Generate access token
+      description: |
+        Generate access token from refresh token
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                refresh_token:
+                  type: string
+                user_id:
+                  type: string
+              required:
+                - refresh_token
+                - user_id
+      responses:
+        200:
+          description: Generate access token successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          access_token:
+                            type: string
+        403:
+          $ref: '#/components/responses/Forbidden'
+  /auth/_facebook:
+    post:
+      summary: Login with Facebook
+      description: |
+        Login with Facebook
+      tags:
+        - Auth
+      security: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - type: object
+                  properties:
+                    code:
+                      type: string
+                  required:
+                    - code
+                - type: object
+                  properties:
+                    access_token:
+                      type: string
+                  required:
+                    - access_token
+      responses:
+        200:
+          $ref: '#/components/responses/LoginSuccess'
+        400:
+          $ref: '#/components/responses/InvalidRequest'
+  /auth/_google:
+    post:
+      summary: Login with Google
+      description: |
+        Login with Google
+      tags:
+        - Auth
+      security: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - type: object
+                  properties:
+                    code:
+                      type: string
+                  required:
+                    - code
+                - type: object
+                  properties:
+                    access_token:
+                      type: string
+                  required:
+                    - access_token
+      responses:
+        200:
+          $ref: '#/components/responses/LoginSuccess'
+        400:
+          $ref: '#/components/responses/InvalidRequest'
+  /auth/_forgot_password:
+    post:
+      tags:
+        - Auth
+      summary: Recover password
+      description: |
+        - Initialize forgot password flow
+        - An OTP code will be send by either:
+          - Email
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: johndoe@gmail.com
+              required:
+                - email
+      responses:
+        200:
+          description: An OTP code was send successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+  /auth/_check_reset_code:
+    post:
+      tags:
+        - Auth
+      summary: Validate OTP code
+      description: |
+        Validate OTP code
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: johndoe@gmail.com
+                reset_code:
+                  type: string
+                  example: abcd1234
+              required:
+                - email
+                - code
+      responses:
+        200:
+          description: OTP code is valid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+  /auth/_reset_password:
+    post:
+      tags:
+        - Auth
+      summary: Reset password with OTP code
+      description: |
+        Reset password with OTP code
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: johndoe@gmail.com
+                reset_code:
+                  type: string
+                  example: abcd1234
+                password:
+                  type: string
+                  format: password
+                  example: NewPassword.123
+              required:
+                - email
+                - reset_code
+                - password
+      responses:
+        200:
+          description: Reset password successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+  /auth/_check_email_exist:
+    post:
+      tags:
+        - Auth
+      summary: Check if email is existed
+      description: |
+        Check if email is existed
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: johndoe@gmail.com
+              required:
+                - email
+      responses:
+        200:
+          description: Email is not existed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+        400:
+          $ref: '#/components/responses/InvalidRequest'
+        409:
+          $ref: '#/components/responses/Duplicated'
+  /users/_profile:
+    get:
+      tags:
+        - User
+      summary: Get user profile
+      description: Get user profile
+      responses:
+        200:
+          description: Get user profile successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+        403:
+          $ref: '#/components/responses/Forbidden'
+  /users/_credentials:
+    put:
+      tags:
+        - User
+      summary: Update user credential
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                password:
+                  type: string
+                update_password:
+                  type: string
+      responses:
+        200:
+          description: Update user credential successfully!
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+        403:
+          $ref: '#/components/responses/Forbidden'
+        400:
+          $ref: '#/components/responses/InvalidRequest'
+  /users/:
+    put:
+      tags:
+        - User
+      summary: Update user profile
+      description: Update user profile
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        200:
+          description: Update user profile successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+        403:
+          $ref: '#/components/responses/Forbidden'
+  /users/_thumbnail:
+    put:
+      tags:
+        - User
+      summary: Update user avatar
+      description: Update user avatar
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+      responses:
+        200:
+          description: Update user avatar successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Success'
+                  - type: object
+                    properties:
+                      data:
+                        type: string
+        403:
+          $ref: '#/components/responses/Forbidden'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  responses:
+    InvalidRequest:
+      description: Invalid request data
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            exception: ForbiddenException
+    LoginSuccess:
+      description: Login user successfully
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/Success'
+              - type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      access_token:
+                        type: string
+                      refresh_token:
+                        type: string
+                      user:
+                        $ref: '#/components/schemas/User'
+    Duplicated:
+      description: Duplicated
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            exception: EntityExistsException
+  schemas:
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Custom error code
+        error:
+          type: string
+        success:
+          type: boolean
+          default: false
+        detail:
+          type: object
+    Success:
+      type: object
+      properties:
+        success:
+          type: string
+          example: True
+        data:
+          type: object
+    User:
+      type: object
+      properties:
+        email:
+          type: string
+          example: 'johndoe@gmail.com'
+        full_name:
+          type: string
+          example: 'John Doe'
+        phone_number:
+          type: string
+          example: '012345678'
+        city:
+          type: string
+          example: 'TP.HCM'
+        gender:
+          type: number
+          enum: [1, 2, 3]
+          description: |
+            1: Male <br> 2: Female <br> 3: Other
+          example: 1
+      required:
+        - email
+        - full_name
+        - phone_number
+    BaseGetListSuccess:
+      type: object
+      properties:
+        success:
+          type: string
+          example: True
+        data:
+          type: object
+          properties:
+            total:
+              type: number
+    BasicUser:
+      type: object
+      properties:
+        email:
+          type: string
+          example: johndoe@gmail.com
+        full_name:
+          type: string
+          example: John Doe

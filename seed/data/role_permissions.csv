@@ -1,0 +1,17 @@
+permission_name,role_name
+AccountManagement,HostAdmin
+AccountManagement.Create,HostAdmin
+AccountManagement.Delete,HostAdmin
+AccountManagement.GetAll,HostAdmin
+ConsumerManagement,HostAdmin
+ConsumerManagement.GetAll,HostAdmin
+RoleManagement,HostAdmin
+RoleManagement.GetAll,HostAdmin
+RoleManagement.Create,HostAdmin
+RoleManagement.Update,HostAdmin
+RoleManagement.Delete,HostAdmin
+PermissionManagement,HostAdmin
+PermissionManagement.GetAll,HostAdmin
+PermissionManagement.Create,HostAdmin
+PermissionManagement.Update,HostAdmin
+PermissionManagement.Delete,HostAdmin

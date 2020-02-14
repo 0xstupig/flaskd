@@ -1,0 +1,9 @@
+stages:
+  - deploy
+
+deploy job:
+  stage: deploy
+  script:
+    - bash deploy/deploy.sh
+  only:
+    - master
