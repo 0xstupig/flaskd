@@ -11,7 +11,7 @@ chardet==3.0.4
 Click==7.0
 cryptography==2.8
 event-bus==1.0.2
-Flask==1.1.1
+Flask==2.2.5
 Flask-Compress==1.4.0
 Flask-Mail==0.9.1
 Flask-Migrate==2.5.2
